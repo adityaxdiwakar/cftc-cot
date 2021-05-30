@@ -61,10 +61,13 @@ func main() {
 	r.Get("/disaggregated", disaggregatedProducts)
 	r.Post("/disaggregated", disaggregatedProductsPost)
 	r.Get("/disaggregated/{productId}", disaggregatedProductInfo)
+	r.Put("/disaggregated/{productId}", disaggregatedProductInfoPut)
 
 	// financials
 	r.Get("/financials", financialProducts)
 	r.Post("/financials", financialProductsPost)
+	r.Get("/financials/{productId}", financialProductInfo)
+	r.Put("/financials/{productId}", financialProductInfoPut)
 
 	http.ListenAndServe(":3000", r)
 }
