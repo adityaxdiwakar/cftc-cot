@@ -11,7 +11,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 )
 
@@ -57,8 +56,13 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Get("/", homePage)
+
+	// disaggregated
 	r.Get("/disaggregated", disaggregatedProducts)
 	r.Post("/disaggregated", disaggregatedProductsPost)
+	r.Get("/disaggregated/{productId}", disaggregatedProductInfo)
+
+	// financials
 	r.Get("/financials", financialProducts)
 	r.Post("/financials", financialProductsPost)
 
@@ -91,79 +95,4 @@ func encode(data interface{}, w http.ResponseWriter, statusCode int) {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	encode("Welcome to the Commitment of Traders API by Aditya Diwakar - Not affiliated with any government organization", w, 200)
-}
-
-func getProducts(relation string, w http.ResponseWriter) {
-	rows, err := db.Query(fmt.Sprintf("SELECT * from %s", relation))
-	defer rows.Close()
-	fmt.Println(err)
-	if err != nil {
-		encode("An issue occured when querying the products", w, 500)
-		return
-	}
-
-	products := make(map[string]string)
-
-	if err != nil {
-		encode("An issue occured when querying the products", w, 500)
-		return
-	}
-
-	for rows.Next() {
-		var id string
-		var name string
-		err = rows.Scan(&id, &name)
-		products[id] = name
-	}
-
-	encode(products, w, 200)
-}
-
-func disaggregatedProducts(w http.ResponseWriter, r *http.Request) {
-	getProducts("disaggregatedprods", w)
-}
-
-func financialProducts(w http.ResponseWriter, r *http.Request) {
-	getProducts("financialprods", w)
-}
-
-type Product struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
-func createProduct(relation string, w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get("Authorization") != conf.AccessToken {
-		encode("You are not authorized to create products", w, 401)
-		return
-	}
-
-	var p Product
-	err := json.NewDecoder(r.Body).Decode(&p)
-	if err != nil {
-		encode("Malformed body, refer to documentation to see how to add new product!", w, 400)
-		return
-	}
-
-	_, err = db.Exec(fmt.Sprintf("INSERT INTO %s (id, name) values ($1, $2)", relation), p.Id, p.Name)
-	if err != nil {
-		if err.(*pq.Error).Code == "23505" {
-			encode("Data already exists in database", w, 409)
-		} else {
-			encode("Could not insert data, server error", w, 500)
-		}
-		return
-	}
-
-	encode(p, w, 201)
-	return
-
-}
-
-func disaggregatedProductsPost(w http.ResponseWriter, r *http.Request) {
-	createProduct("disaggregatedprods", w, r)
-}
-
-func financialProductsPost(w http.ResponseWriter, r *http.Request) {
-	createProduct("financialprods", w, r)
 }
