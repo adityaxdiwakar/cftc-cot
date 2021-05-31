@@ -19,6 +19,7 @@ var db *sql.DB
 
 type tomlConfig struct {
 	Database    postgresCreds
+	Port        int
 	AccessToken string `toml:"access_token"`
 }
 
@@ -69,7 +70,7 @@ func main() {
 	r.Get("/financials/{productId}", financialProductInfo)
 	r.Put("/financials/{productId}", financialProductInfoPut)
 
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), r)
 }
 
 type StringResponse struct {
