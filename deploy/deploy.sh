@@ -1,5 +1,5 @@
 make image
-echo $DOCKER_PASSWORD | docker login docker.pkg.github.com -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
+echo $DOCKER_PASSWORD | docker login docker.pkg.github.com -u $DOCKER_USERNAME --password-stdin
 make push-image
 
 eval "$(ssh-agent -s)"
