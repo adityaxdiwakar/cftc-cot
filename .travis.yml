@@ -7,3 +7,11 @@ before_install:
 - docker build -t cftc-cot .
 script:
 - docker images cftc-cot
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: sh deploy/deploy.sh
+  on:
+    tags: true
+addons:
+  ssh_known_hosts: vps.adi.wtf
