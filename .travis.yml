@@ -1,0 +1,7 @@
+sudo: true
+services:
+- docker
+before_install:
+- docker build -t cftc-cot .
+script:
+- docker images cftc-cot

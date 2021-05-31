@@ -31,7 +31,7 @@ type postgresCreds struct {
 }
 
 func init() {
-	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
+	if _, err := toml.DecodeFile("config/config.toml", &conf); err != nil {
 		log.Fatalf("error: could not parse config file: %v\n", err)
 	}
 
