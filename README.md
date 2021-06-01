@@ -1,4 +1,6 @@
 # cftc-cot
+[![Build Status](https://travis-ci.com/adityaxdiwakar/cftc-cot.svg?branch=master)](https://travis-ci.com/adityaxdiwakar/cftc-cot)
+
 Commitment of Traders Scraper and API open sourced by Loganov Data
 
 ## Open Sourced
