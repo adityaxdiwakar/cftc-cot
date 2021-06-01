@@ -57,6 +57,7 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Get("/", homePage)
+	r.NotFound(notFoundHandler)
 
 	// disaggregated
 	r.Get("/disaggregated", disaggregatedProducts)
@@ -99,4 +100,8 @@ func encode(data interface{}, w http.ResponseWriter, statusCode int) {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	encode("Welcome to the Commitment of Traders API by Aditya Diwakar - Not affiliated with any government organization", w, 200)
+}
+
+func notFoundHandler(w http.ResponseWriter, r *http.Request) {
+	encode("This is not a valid route, please refer to the documentation", w, 404)
 }

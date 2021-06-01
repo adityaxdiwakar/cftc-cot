@@ -1,4 +1,5 @@
 import requests
+import time
 import os
 
 types = ["disaggregated", "financials"]
@@ -7,7 +8,7 @@ for t in types:
     r = requests.get(f"https://api.adi.wtf/cots/{t}").json()
     for key in r:
         pair = (key, r[key]["name"])
-        requests.post(f"http://localhost:3000/{t}", json={
+        requests.post(f"https://api.aditya.diwakar.io/cot/{t}", json={
             "id": pair[0],
             "name": pair[1]
         }, headers=headers)
@@ -18,6 +19,7 @@ for t in types:
             for field in d:
                 d[field] = int(d[field])
             d["date"] = n_date
-            requests.put(f"http://localhost:3000/{t}/{key}",
+            requests.put(f"https://api.aditya.diwakar.io/cot/{t}/{key}",
                   json=d,
                   headers=headers)
+            time.sleep(0.05)
